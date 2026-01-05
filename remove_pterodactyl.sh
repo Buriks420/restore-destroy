@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Check if script is run as root
 if [[ $EUID -ne 0 ]]; then
    echo "This script must be run as root (use sudo)."
    exit 1
@@ -19,7 +18,6 @@ fi
 
 echo "Starting removal process..."
 
-# --- Step 1: Stop and Remove Wings Daemon ---
 echo "Removing Wings..."
 systemctl stop wings
 systemctl disable wings
@@ -29,15 +27,13 @@ rm -rf /etc/pterodactyl
 rm -rf /var/lib/pterodactyl # Deletes game data
 systemctl daemon-reload
 
-# --- Step 2: Remove the Pterodactyl Panel ---
 echo "Removing Panel web files and Nginx config..."
 rm -rf /var/www/pterodactyl
 rm -f /etc/nginx/sites-enabled/pterodactyl.conf
 rm -f /etc/nginx/sites-available/pterodactyl.conf
 systemctl reload nginx
 
-# --- Step 3: Remove the Database ---
-# Note: This assumes you are using the default 'panel' database name.
+
 echo "Removing Database and Database User..."
 read -sp "Enter MariaDB/MySQL Root Password: " DB_PASS
 echo
